@@ -3,8 +3,11 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import text
 
 from app.database import engine
+from app.routers import products  
 
 app = FastAPI(title="NestShop API", version="0.1.0")
+
+app.include_router(products.router)  
 
 
 @app.get("/health", tags=["Santé"])
