@@ -20,3 +20,14 @@ INSERT INTO products (name, description, price, stock) VALUES
     ('Collier en perles', 'Collier fait main en perles colorées', 7500, 30),
     ('Statuette en bois', 'Statuette sculptée à la main en bois d''ébène', 25000, 8)
 ON CONFLICT (name) DO NOTHING;
+
+
+-- Table des commandes
+CREATE TABLE IF NOT EXISTS orders (
+    id            SERIAL PRIMARY KEY,
+    customer_name VARCHAR(100) NOT NULL,
+    product_id    INTEGER NOT NULL REFERENCES products(id),
+    quantity      INTEGER NOT NULL CHECK (quantity > 0),
+    total         INTEGER NOT NULL CHECK (total > 0),
+    created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
