@@ -9,6 +9,14 @@ from app.schemas import OrderCreate, OrderOut
 router = APIRouter(prefix="/api/orders", tags=["Commandes"])
 
 
+@router.get("", response_model=list[OrderOut])
+def list_orders(db: Session = Depends(get_db)):
+    """Renvoie toutes les commandes, de la plus récente à la plus ancienne."""
+    return db.scalars(
+        select(Order).order_by(Order.created_at.desc(), Order.id.desc())
+    ).all()
+
+
 @router.post("", response_model=OrderOut, status_code=status.HTTP_201_CREATED)
 def create_order(order_in: OrderCreate, db: Session = Depends(get_db)):
     """Crée une commande et diminue le stock du produit."""
