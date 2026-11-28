@@ -1,0 +1,110 @@
+<nav class="navbar">
+  <div class="brand">
+    <span class="logo">N</span>
+    <span>Nest<strong>Shop</strong></span>
+  </div>
+  <span class="nav-badge">{{ products().length }} produits disponibles</span>
+</nav>
+
+<section class="hero">
+  <div class="hero-content">
+    <span class="hero-tag"> Fait main au Sénégal</span>
+    <h1>L'artisanat sénégalais,<br />à portée de clic</h1>
+    <p>Paniers, boubous, bijoux et sculptures : des pièces uniques créées par nos artisans.</p>
+  </div>
+</section>
+
+<main>
+  @if (message()) {
+    <div class="alert success">
+      <span class="alert-icon">✓</span>
+      <span>{{ message() }}</span>
+      <button class="alert-close" (click)="message.set('')">×</button>
+    </div>
+  }
+  @if (error() && !selected()) {
+    <div class="alert error">
+      <span class="alert-icon">!</span>
+      <span>{{ error() }}</span>
+      <button class="alert-close" (click)="error.set('')">×</button>
+    </div>
+  }
+
+  <div class="section-title">
+    <h2>Nos produits</h2>
+    <p>Choisissez votre pièce préférée et commandez en quelques secondes.</p>
+  </div>
+
+  <section class="grid">
+    @for (product of products(); track product.id) {
+      <article class="card">
+        <div class="card-visual">
+          <span class="card-icon">{{ icon(product.name) }}</span>
+          @if (product.stock === 0) {
+            <span class="badge out">Rupture</span>
+          } @else if (product.stock <= 5) {
+            <span class="badge low">Plus que {{ product.stock }}</span>
+          } @else {
+            <span class="badge ok">En stock</span>
+          }
+        </div>
+        <div class="card-body">
+          <h3>{{ product.name }}</h3>
+          <p class="description">{{ product.description }}</p>
+          <div class="card-footer">
+            <span class="price">{{ fcfa(product.price) }}</span>
+            <button (click)="choose(product)" [disabled]="product.stock === 0">Commander</button>
+          </div>
+        </div>
+      </article>
+    } @empty {
+      <p class="empty">Aucun produit pour le moment.</p>
+    }
+  </section>
+</main>
+
+@if (selected(); as product) {
+  <div class="overlay" (click)="cancel()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <button class="modal-close" (click)="cancel()">×</button>
+
+      <div class="modal-header">
+        <span class="modal-icon">{{ icon(product.name) }}</span>
+        <div>
+          <h2>{{ product.name }}</h2>
+          <p>{{ fcfa(product.price) }} · {{ product.stock }} en stock</p>
+        </div>
+      </div>
+
+      @if (error()) {
+        <div class="alert error small">
+          <span class="alert-icon">!</span>
+          <span>{{ error() }}</span>
+        </div>
+      }
+
+      <label>
+        Votre nom
+        <input type="text" [(ngModel)]="customerName" maxlength="100" placeholder="Ex : Awa Diop" />
+      </label>
+
+      <label>
+        Quantité
+        <input type="number" [(ngModel)]="quantity" min="1" [max]="product.stock" />
+      </label>
+
+      <div class="total">
+        <span>Total</span>
+        <strong>{{ fcfa(product.price * quantity) }}</strong>
+      </div>
+
+      <button class="btn-full" (click)="order()" [disabled]="loading()">
+        {{ loading() ? 'Envoi en cours…' : 'Valider la commande' }}
+      </button>
+    </div>
+  </div>
+}
+
+<footer>
+  <p>© 2026 NestShop · Projet DevSecOps · DevNest Academy</p>
+</footer>

@@ -1,0 +1,4 @@
+cd ~/Desktop/Mesprojetsperso/Devops/NestShop/api
+source .venv/bin/activate
+pip install pytest pytest-cov
+pip freeze | grep -i -E "^(pytest|pytest-cov)=="

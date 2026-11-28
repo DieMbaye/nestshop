@@ -1,0 +1,4 @@
+title = "Configuration Gitleaks de NestShop"
+
+[extend]
+useDefault = true
